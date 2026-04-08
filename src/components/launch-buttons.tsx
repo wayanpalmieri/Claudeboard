@@ -79,7 +79,7 @@ function LaunchBtn({
       type="button"
       onClick={onClick}
       disabled={loading}
-      className="group relative flex items-center gap-1.5 px-3.5 py-[7px] rounded-[9px] text-[13px] font-medium cursor-pointer transition-all duration-200 active:scale-[0.96] disabled:opacity-50 overflow-hidden"
+      className="group relative flex items-center gap-1.5 px-3.5 py-[7px] rounded-[9px] text-[13px] font-medium cursor-pointer transition-all duration-200 active:scale-[0.96] disabled:opacity-50 overflow-hidden whitespace-nowrap"
       style={{
         background: filled ? color : `${color}12`,
         color: filled ? "#fff" : color,

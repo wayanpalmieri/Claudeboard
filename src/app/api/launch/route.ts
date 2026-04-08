@@ -38,8 +38,13 @@ export async function POST(request: Request) {
         args = ["-a", "Terminal", projectPath];
         break;
       case "claude":
-        cmd = "open";
-        args = ["-a", "Terminal", projectPath];
+        cmd = "osascript";
+        args = [
+          "-e",
+          `tell application "Terminal" to activate`,
+          "-e",
+          `tell application "Terminal" to do script "cd '${projectPath}' && claude"`,
+        ];
         break;
       default:
         resolve(NextResponse.json({ error: "Invalid target" }, { status: 400 }));

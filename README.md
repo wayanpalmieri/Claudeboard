@@ -15,7 +15,10 @@ ZManager Code reads your `~/.claude/` data directory and surfaces everything in 
 - **Session Viewer** — Read full conversation history from any Claude Code session
 - **Insights** — Automated analysis scans projects every 30 minutes for issues, suggestions, and opportunities
 - **Search** — Search across all sessions and projects by title, prompt, or project name
-- **Launch Controls** — Open any project in VS Code, Terminal, or Claude directly from the dashboard
+- **Launch Controls** — Open any project directly from the dashboard:
+  - **VS Code** — Opens the project in a new VS Code window with the project folder loaded
+  - **Terminal** — Opens a Terminal window at the project folder
+  - **Claude** — Opens a Terminal window at the project folder and starts a Claude Code session
 - **Settings** — Configure projects folder, exclude specific directories
 
 ### Data Sources
