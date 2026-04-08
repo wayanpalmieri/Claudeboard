@@ -31,16 +31,19 @@ export function useStats() {
   }>("/api/stats", fetcher);
 }
 
-export function useInsights() {
-  return useSWR<Array<{
-    type: "warning" | "suggestion" | "opportunity" | "health";
-    priority: "high" | "medium" | "low";
-    project: string;
-    projectSlug: string;
-    title: string;
-    description: string;
-    metric?: string;
-  }>>("/api/insights", fetcher);
+export function useInsights(refresh?: boolean) {
+  return useSWR<{
+    lastRun: string;
+    insights: Array<{
+      type: "warning" | "suggestion" | "opportunity" | "health";
+      priority: "high" | "medium" | "low";
+      project: string;
+      projectSlug: string;
+      title: string;
+      description: string;
+      metric?: string;
+    }>;
+  }>(refresh ? "/api/insights?refresh=1" : "/api/insights", fetcher);
 }
 
 export function useTasks() {

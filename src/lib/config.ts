@@ -13,6 +13,7 @@ const DEFAULT_CURATED_FOLDER = path.join(home, "Downloads", "SORT", "Projects", 
 
 export interface AppSettings {
   projectsFolder: string;
+  excludedFolders: string[];
 }
 
 export function getSettings(): AppSettings {
@@ -20,12 +21,15 @@ export function getSettings(): AppSettings {
     if (fs.existsSync(SETTINGS_PATH)) {
       const raw = fs.readFileSync(SETTINGS_PATH, "utf-8");
       const data = JSON.parse(raw);
-      return { projectsFolder: data.projectsFolder || DEFAULT_CURATED_FOLDER };
+      return {
+        projectsFolder: data.projectsFolder || DEFAULT_CURATED_FOLDER,
+        excludedFolders: Array.isArray(data.excludedFolders) ? data.excludedFolders : [],
+      };
     }
   } catch {
     // ignore
   }
-  return { projectsFolder: DEFAULT_CURATED_FOLDER };
+  return { projectsFolder: DEFAULT_CURATED_FOLDER, excludedFolders: [] };
 }
 
 export function saveSettings(settings: Partial<AppSettings>) {

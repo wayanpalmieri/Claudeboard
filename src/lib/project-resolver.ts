@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { getCuratedFolder, PATHS, encodePath, slugify } from "./config";
+import { getCuratedFolder, getSettings, PATHS, encodePath, slugify } from "./config";
 
 export interface ResolvedProject {
   slug: string;
@@ -69,9 +69,12 @@ export function resolveProjects(): ResolvedProject[] {
     projects.push({ slug, name, group, path: dirPath, claudeDataPath });
   }
 
+  const excluded = new Set(getSettings().excludedFolders.map(f => f.toLowerCase()));
+
   const topEntries = fs.readdirSync(getCuratedFolder(), { withFileTypes: true });
   for (const entry of topEntries) {
     if (!entry.isDirectory() || entry.name.startsWith(".")) continue;
+    if (excluded.has(entry.name.toLowerCase())) continue;
 
     const dirPath = path.join(getCuratedFolder(), entry.name);
 
@@ -80,6 +83,7 @@ export function resolveProjects(): ResolvedProject[] {
       const subEntries = fs.readdirSync(dirPath, { withFileTypes: true });
       for (const sub of subEntries) {
         if (!sub.isDirectory() || sub.name.startsWith(".") || !isProject(sub.name)) continue;
+        if (excluded.has(sub.name.toLowerCase())) continue;
         addProject(path.join(dirPath, sub.name), sub.name, entry.name);
       }
     } else {

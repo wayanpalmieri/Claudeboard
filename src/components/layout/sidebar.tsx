@@ -20,9 +20,10 @@ export function Sidebar() {
 
   return (
     <aside className="w-[220px] bg-[#1c1c1e]/80 backdrop-blur-xl flex flex-col h-full border-r border-white/[0.06]">
-      {/* Title bar area */}
-      <div className="h-[52px] flex items-end px-4 pb-2 drag-region">
-        <span className="text-[13px] font-semibold text-white/90 tracking-tight">ZManager Code</span>
+      {/* Logo */}
+      <div className="px-4 pt-5 pb-4">
+        <h1 className="text-[17px] font-bold text-white tracking-tight leading-tight">ZManager Code</h1>
+        <p className="text-[10px] text-[#48484a] mt-0.5 tracking-wide">Designed for Claude Code Projects</p>
       </div>
 
       <nav className="flex-1 px-3 pt-2 space-y-0.5">
