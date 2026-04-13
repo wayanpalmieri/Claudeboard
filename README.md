@@ -56,8 +56,12 @@ All data is read directly from the filesystem — no database required.
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js **20.9+** (Next.js 16 requirement)
 - Claude Code installed (`~/.claude/` directory exists)
+- **Editor (optional, for the VS Code launch button)** — VS Code is the default. The button will silently fail if it isn't installed:
+  - **macOS**: expects `/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code`
+  - **Linux/Windows**: expects `code` on `PATH`
+  - **Using a different editor (Cursor, Windsurf, Zed, JetBrains…)?** Edit the `vscode` case in [`src/app/api/launch/route.ts`](src/app/api/launch/route.ts) and swap the command — e.g. `cursor`, `windsurf`, `zed`, or `idea` — for your tool. Terminal and Claude launches are editor-agnostic and work unchanged.
 
 ### Install
 
