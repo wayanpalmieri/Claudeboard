@@ -42,4 +42,4 @@ next-env.d.ts
 
 # Claudeboard runtime files
 insights-cache.json
-zmanager-settings.json
+claudeboard-settings.json

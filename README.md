@@ -1,6 +1,6 @@
 # Claudeboard
 
-A local dashboard for managing all your Claude Code projects from one interface. Built with Next.js, designed for macOS.
+A local dashboard for managing all your Claude Code projects from one interface. Built with Next.js, works on macOS, Windows, and Linux.
 
 Mission control for Claude Code projects.
 
@@ -149,7 +149,7 @@ macOS-native dark theme following Apple Human Interface Guidelines:
 
 ## Configuration
 
-Settings are persisted in `zmanager-settings.json` at the project root:
+Settings are persisted in `claudeboard-settings.json` at the project root:
 
 ```json
 {
