@@ -26,7 +26,7 @@ export function Sidebar() {
       {/* Logo */}
       <div className="px-4 pt-5 pb-4">
         <h1 className="text-[17px] font-bold text-white tracking-tight leading-tight">Claudeboard</h1>
-        <p className="text-[10px] text-[#48484a] mt-0.5 tracking-wide">Designed for Claude Code Projects</p>
+        <p className="text-[10px] text-[#8e8e93] mt-0.5 tracking-wide">Designed for Claude Code Projects</p>
       </div>
 
       <nav className="flex-1 px-3 pt-2 space-y-0.5">
