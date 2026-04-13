@@ -1,16 +1,22 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useProjects } from "@/hooks/use-api";
+import { useRouter } from "next/navigation";
+import { useProjects, useGitStatuses, useGitHubVisibility } from "@/hooks/use-api";
 import { Input } from "@/components/ui/input";
-import { Search, Clock, MessageSquare, FolderOpen, RefreshCw } from "lucide-react";
+import { Search, Clock, MessageSquare, FolderOpen, RefreshCw, GitBranch } from "lucide-react";
+import { GithubLink } from "@/components/icons/github";
 import { formatDistanceToNow } from "date-fns";
+import { formatCost } from "@/lib/pricing";
 import Link from "next/link";
 
 type SortKey = "lastActivity" | "name" | "sessionCount";
 
 export default function ProjectsPage() {
   const { data: projects, isLoading, mutate, isValidating } = useProjects();
+  const { data: gitStatuses } = useGitStatuses();
+  const { data: visibility } = useGitHubVisibility();
+  const router = useRouter();
   const [filter, setFilter] = useState("");
   const [sortBy, setSortBy] = useState<SortKey>("name");
   const [groupFilter, setGroupFilter] = useState<string | null>(null);
@@ -150,16 +156,29 @@ export default function ProjectsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {items!.map((project) => {
                   const accent = groupColor(project.group);
+                  const git = gitStatuses?.[project.slug];
+                  const href = `/projects/${project.slug}`;
                   return (
-                    <Link key={project.slug} href={`/projects/${project.slug}`}>
-                      <div className="group relative overflow-hidden rounded-xl bg-[#2c2c2e]/80 backdrop-blur-xl border-[0.5px] border-white/[0.06] cursor-pointer h-full transition-all duration-250 hover:border-white/[0.12] hover:shadow-[0_6px_24px_rgba(0,0,0,0.3)] hover:scale-[1.015] active:scale-[0.99]">
+                    <div
+                      key={project.slug}
+                      role="link"
+                      tabIndex={0}
+                      onClick={() => router.push(href)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          router.push(href);
+                        }
+                      }}
+                      className="group relative overflow-hidden rounded-xl bg-[#2c2c2e]/80 backdrop-blur-xl border-[0.5px] border-white/[0.06] cursor-pointer h-full transition-all duration-250 hover:border-white/[0.12] hover:shadow-[0_6px_24px_rgba(0,0,0,0.3)] hover:scale-[1.015] active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0a84ff]/50"
+                    >
                         {/* Accent top bar */}
                         <div className="h-[3px] w-full" style={{ background: `linear-gradient(90deg, ${accent}, ${accent}00)` }} />
 
                         <div className="p-4">
                           {/* Header */}
-                          <div className="flex items-start justify-between mb-2">
-                            <div className="flex items-center gap-2.5">
+                          <div className="flex items-start justify-between mb-2 gap-2">
+                            <div className="flex items-center gap-2.5 min-w-0">
                               <div className="h-8 w-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: `${accent}15` }}>
                                 <FolderOpen className="h-4 w-4" style={{ color: accent }} />
                               </div>
@@ -172,6 +191,11 @@ export default function ProjectsPage() {
                                 )}
                               </div>
                             </div>
+                            {git?.remoteUrl && (
+                              <div className="shrink-0 h-7 w-7 rounded-md flex items-center justify-center hover:bg-white/[0.06] transition-colors">
+                                <GithubLink href={git.remoteUrl} visibility={visibility?.[project.slug]} />
+                              </div>
+                            )}
                           </div>
 
                           {/* Description */}
@@ -187,7 +211,23 @@ export default function ProjectsPage() {
                             <span className="text-[11px] text-[#636366] bg-white/[0.04] rounded-md px-2 py-[3px] tabular-nums">
                               {project.totalMessages.toLocaleString()} msgs
                             </span>
+                            {project.totalCost > 0 && (
+                              <span className="text-[11px] text-[#ffd60a]/80 bg-[#ffd60a]/[0.06] rounded-md px-2 py-[3px] tabular-nums">
+                                {formatCost(project.totalCost)}
+                              </span>
+                            )}
                           </div>
+
+                          {/* Git status row */}
+                          {git?.hasGit && git.branch && (
+                            <div className="flex items-center gap-1.5 mt-2 text-[11px] text-[#8e8e93] font-mono tabular-nums">
+                              <GitBranch className="h-3 w-3" />
+                              <span className="truncate">{git.branch}</span>
+                              {git.dirty > 0 && <span className="text-[#ff9f0a]">●{git.dirty}</span>}
+                              {git.ahead > 0 && <span className="text-[#30d158]">↑{git.ahead}</span>}
+                              {git.behind > 0 && <span className="text-[#ff453a]">↓{git.behind}</span>}
+                            </div>
+                          )}
 
                           {/* Time */}
                           {project.lastActivity && (
@@ -201,7 +241,6 @@ export default function ProjectsPage() {
                         {/* Hover glow */}
                         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style={{ background: `radial-gradient(circle at 30% 0%, ${accent}08, transparent 60%)` }} />
                       </div>
-                    </Link>
                   );
                 })}
               </div>
