@@ -40,6 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# ZManager runtime files
+# Claudeboard runtime files
 insights-cache.json
 zmanager-settings.json

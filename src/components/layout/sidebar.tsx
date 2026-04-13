@@ -22,7 +22,7 @@ export function Sidebar() {
     <aside className="w-[220px] bg-[#1c1c1e]/80 backdrop-blur-xl flex flex-col h-full border-r border-white/[0.06]">
       {/* Logo */}
       <div className="px-4 pt-5 pb-4">
-        <h1 className="text-[17px] font-bold text-white tracking-tight leading-tight">ZManager Code</h1>
+        <h1 className="text-[17px] font-bold text-white tracking-tight leading-tight">Claudeboard</h1>
         <p className="text-[10px] text-[#48484a] mt-0.5 tracking-wide">Designed for Claude Code Projects</p>
       </div>
 

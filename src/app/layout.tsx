@@ -3,7 +3,7 @@ import "./globals.css";
 import { Sidebar } from "@/components/layout/sidebar";
 
 export const metadata: Metadata = {
-  title: "ZManager Code",
+  title: "Claudeboard",
   description: "Manage all your Claude Code projects from one place",
 };
 

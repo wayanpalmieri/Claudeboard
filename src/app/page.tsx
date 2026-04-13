@@ -5,6 +5,7 @@ import { FolderOpen, MessageSquare, Zap, Activity, Clock, ChevronRight } from "l
 import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
 import { ActivityChart } from "@/components/dashboard/activity-chart";
+import { DailyBriefing } from "@/components/dashboard/daily-briefing";
 
 export default function DashboardPage() {
   const { data: projects, isLoading: projectsLoading } = useProjects();
@@ -19,6 +20,8 @@ export default function DashboardPage() {
       <div className="animate-in">
         <h1 className="text-[22px] font-semibold text-white/95 tracking-tight">Dashboard</h1>
       </div>
+
+      <DailyBriefing />
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-3">

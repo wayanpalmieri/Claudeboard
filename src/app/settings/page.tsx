@@ -78,7 +78,7 @@ export default function SettingsPage() {
     <div className="p-6 space-y-6 max-w-[700px]">
       <div className="animate-in">
         <h1 className="text-[22px] font-semibold text-white/95 tracking-tight">Settings</h1>
-        <p className="text-[13px] text-[#98989d] mt-0.5">Configure your ZManager Code preferences</p>
+        <p className="text-[13px] text-[#98989d] mt-0.5">Configure your Claudeboard preferences</p>
       </div>
 
       {/* Projects Location */}

@@ -1,12 +1,12 @@
-# ZManager Code
+# Claudeboard
 
 A local dashboard for managing all your Claude Code projects from one interface. Built with Next.js, designed for macOS.
 
-Designed for Claude Code Projects.
+Mission control for Claude Code projects.
 
 ## What It Does
 
-ZManager Code reads your `~/.claude/` data directory and surfaces everything in a unified dashboard — projects, sessions, activity, and automated insights.
+Claudeboard reads your `~/.claude/` data directory and surfaces everything in a unified dashboard — projects, sessions, activity, and automated insights.
 
 ### Features
 
@@ -44,8 +44,8 @@ All data is read directly from the filesystem — no database required.
 ### Install
 
 ```bash
-git clone <repo-url> ZManager_v1
-cd ZManager_v1
+git clone <repo-url> claudeboard
+cd claudeboard
 npm install
 ```
 

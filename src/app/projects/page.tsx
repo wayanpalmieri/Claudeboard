@@ -12,7 +12,7 @@ type SortKey = "lastActivity" | "name" | "sessionCount";
 export default function ProjectsPage() {
   const { data: projects, isLoading, mutate, isValidating } = useProjects();
   const [filter, setFilter] = useState("");
-  const [sortBy, setSortBy] = useState<SortKey>("lastActivity");
+  const [sortBy, setSortBy] = useState<SortKey>("name");
   const [groupFilter, setGroupFilter] = useState<string | null>(null);
 
   const groups = useMemo(() => {
