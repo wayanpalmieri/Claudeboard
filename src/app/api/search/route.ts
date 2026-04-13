@@ -4,8 +4,9 @@ import { getSessionsForProject } from "@/lib/session-parser";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const query = searchParams.get("q")?.toLowerCase();
-  if (!query) return NextResponse.json([]);
+  const rawQuery = searchParams.get("q");
+  if (!rawQuery || rawQuery.length > 200) return NextResponse.json([]);
+  const query = rawQuery.toLowerCase();
 
   const projects = resolveProjects();
   const results: Array<{

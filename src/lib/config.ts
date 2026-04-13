@@ -1,15 +1,17 @@
 import path from "path";
 import os from "os";
 import fs from "fs";
+import { safeParse } from "./safe-json";
 
 const home = os.homedir();
 
 export const CLAUDE_DATA_DIR = process.env.CLAUDE_DATA_DIR || path.join(home, ".claude");
 
 // Persistent settings file stored next to the app
-const SETTINGS_PATH = path.join(process.cwd(), "zmanager-settings.json");
+const SETTINGS_PATH = path.join(process.cwd(), "claudeboard-settings.json");
 
-const DEFAULT_CURATED_FOLDER = path.join(home, "Downloads", "SORT", "Projects", "Claude-Code-apps");
+// Default to a projects folder in the user's home; override in Settings UI
+const DEFAULT_CURATED_FOLDER = path.join(home, "Projects");
 
 export interface AppSettings {
   projectsFolder: string;
@@ -20,7 +22,7 @@ export function getSettings(): AppSettings {
   try {
     if (fs.existsSync(SETTINGS_PATH)) {
       const raw = fs.readFileSync(SETTINGS_PATH, "utf-8");
-      const data = JSON.parse(raw);
+      const data = safeParse<Partial<AppSettings>>(raw);
       return {
         projectsFolder: data.projectsFolder || DEFAULT_CURATED_FOLDER,
         excludedFolders: Array.isArray(data.excludedFolders) ? data.excludedFolders : [],
@@ -35,8 +37,11 @@ export function getSettings(): AppSettings {
 export function saveSettings(settings: Partial<AppSettings>) {
   const current = getSettings();
   const merged = { ...current, ...settings };
-  fs.writeFileSync(SETTINGS_PATH, JSON.stringify(merged, null, 2));
-  // Reset CURATED_FOLDER cache
+  // Atomic write: stage to a sibling temp file then rename, so a crash
+  // mid-write can't leave claudeboard-settings.json half-written.
+  const tmp = `${SETTINGS_PATH}.${process.pid}.${Date.now()}.tmp`;
+  fs.writeFileSync(tmp, JSON.stringify(merged, null, 2));
+  fs.renameSync(tmp, SETTINGS_PATH);
   _curatedFolder = merged.projectsFolder;
 }
 
@@ -48,9 +53,6 @@ export function getCuratedFolder(): string {
   }
   return _curatedFolder;
 }
-
-// Keep backward compat — but now reads from settings
-export const CURATED_FOLDER = getCuratedFolder();
 
 export const PATHS = {
   projects: path.join(CLAUDE_DATA_DIR, "projects"),

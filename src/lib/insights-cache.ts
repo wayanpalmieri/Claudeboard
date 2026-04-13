@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { analyzeProjects, type Insight } from "./project-analyzer";
+import { safeParse } from "./safe-json";
 
 const CACHE_PATH = path.join(process.cwd(), "insights-cache.json");
 
@@ -12,7 +13,7 @@ interface InsightsCache {
 export function getCachedInsights(): InsightsCache | null {
   try {
     if (fs.existsSync(CACHE_PATH)) {
-      return JSON.parse(fs.readFileSync(CACHE_PATH, "utf-8"));
+      return safeParse<InsightsCache>(fs.readFileSync(CACHE_PATH, "utf-8"));
     }
   } catch {
     // ignore
@@ -26,7 +27,10 @@ export async function refreshInsights(): Promise<InsightsCache> {
     lastRun: new Date().toISOString(),
     insights,
   };
-  fs.writeFileSync(CACHE_PATH, JSON.stringify(cache, null, 2));
+  // Atomic write so a crash mid-write can't leave a half-written cache file.
+  const tmp = `${CACHE_PATH}.${process.pid}.${Date.now()}.tmp`;
+  fs.writeFileSync(tmp, JSON.stringify(cache, null, 2));
+  fs.renameSync(tmp, CACHE_PATH);
   return cache;
 }
 

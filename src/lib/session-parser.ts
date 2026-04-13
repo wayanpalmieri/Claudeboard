@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import readline from "readline";
+import { safeParse } from "./safe-json";
 import type { SessionEntry, SessionMessage } from "@/types/project";
 
 interface SessionIndexFile {
@@ -32,7 +33,7 @@ export async function getSessionsForProject(claudeDataPath: string): Promise<Ses
   if (fs.existsSync(indexPath)) {
     try {
       const raw = fs.readFileSync(indexPath, "utf-8");
-      const index: SessionIndexFile = JSON.parse(raw);
+      const index = safeParse(raw) as SessionIndexFile;
       const entries: SessionEntry[] = index.entries.map((e) => ({
         sessionId: e.sessionId,
         title: null,
@@ -85,7 +86,7 @@ async function extractTitle(jsonlPath: string): Promise<string | null> {
     rl.on("line", (line) => {
       if (found) return;
       try {
-        const entry = JSON.parse(line);
+        const entry = safeParse(line) as { type?: string; aiTitle?: string };
         if (entry.type === "ai-title" && entry.aiTitle) {
           found = true;
           rl.close();
@@ -119,7 +120,7 @@ async function parseSessionMetadata(jsonlPath: string, sessionId: string): Promi
 
     rl.on("line", (line) => {
       try {
-        const entry: SessionMessage = JSON.parse(line);
+        const entry = safeParse(line) as SessionMessage;
 
         if (entry.timestamp) {
           if (!created || entry.timestamp < created) created = entry.timestamp;
@@ -182,7 +183,7 @@ export async function getSessionMessages(jsonlPath: string): Promise<SessionMess
   return new Promise((resolve) => {
     rl.on("line", (line) => {
       try {
-        const entry: SessionMessage = JSON.parse(line);
+        const entry = safeParse(line) as SessionMessage;
         // Only include displayable message types
         if (["user", "assistant", "ai-title"].includes(entry.type)) {
           messages.push(entry);

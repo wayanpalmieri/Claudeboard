@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { PATHS } from "./config";
 import { resolveProjects } from "./project-resolver";
+import { safeParse } from "./safe-json";
 import type { TodoItem } from "@/types/project";
 
 export function aggregateTodos(): { todos: TodoItem[]; byProject: Record<string, TodoItem[]> } {
@@ -16,7 +17,7 @@ export function aggregateTodos(): { todos: TodoItem[]; byProject: Record<string,
     const filePath = path.join(todosDir, file);
     try {
       const raw = fs.readFileSync(filePath, "utf-8");
-      const items: TodoItem[] = JSON.parse(raw);
+      const items = safeParse<TodoItem[]>(raw);
       if (!Array.isArray(items) || items.length === 0) continue;
 
       // Extract session ID from filename: {sessionId}-agent-{agentId}.json

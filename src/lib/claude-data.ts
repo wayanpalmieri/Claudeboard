@@ -91,10 +91,12 @@ export async function getSessionConversation(slug: string, sessionId: string): P
   const project = resolveProjectBySlug(slug);
   if (!project?.claudeDataPath) return [];
 
-  const jsonlPath = path.join(project.claudeDataPath, `${sessionId}.jsonl`);
+  const jsonlPath = path.resolve(project.claudeDataPath, `${sessionId}.jsonl`);
 
   // Ensure resolved path stays within the claude data directory
-  if (!jsonlPath.startsWith(project.claudeDataPath)) return [];
+  const baseDir = path.resolve(project.claudeDataPath);
+  const baseWithSep = baseDir.endsWith(path.sep) ? baseDir : baseDir + path.sep;
+  if (!jsonlPath.startsWith(baseWithSep)) return [];
 
   return getSessionMessages(jsonlPath);
 }

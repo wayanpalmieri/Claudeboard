@@ -64,7 +64,7 @@ export function resolveProjects(): ResolvedProject[] {
 
     const encoded = encodePath(dirPath);
     const claudeDir = path.join(PATHS.projects, encoded);
-    const claudeDataPath = fs.existsSync(claudeDir) ? claudeDir : findAlternatePath(dirPath, name, group);
+    const claudeDataPath = fs.existsSync(claudeDir) ? claudeDir : findAlternatePath(name, group);
 
     projects.push({ slug, name, group, path: dirPath, claudeDataPath });
   }
@@ -96,12 +96,7 @@ export function resolveProjects(): ResolvedProject[] {
   return projects;
 }
 
-function findAlternatePath(dirPath: string, name: string, group: string | null): string | null {
-  // Try old path format (without SORT/Projects)
-  const oldStyleParts = dirPath.replace(/.*Claude-Code-apps\//, "").replace(/\//g, "-");
-  const altOld = path.join(PATHS.projects, `-Users-wayanpalmieri-Downloads-Claude-Code-apps-${oldStyleParts}`);
-  if (fs.existsSync(altOld)) return altOld;
-
+function findAlternatePath(name: string, group: string | null): string | null {
   // Try matching by encoded suffix
   try {
     const allDirs = fs.readdirSync(PATHS.projects);

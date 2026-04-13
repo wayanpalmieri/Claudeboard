@@ -3,12 +3,13 @@ import path from "path";
 import { PATHS } from "./config";
 import { resolveProjects } from "./project-resolver";
 import { getSessionsForProject } from "./session-parser";
+import { safeParse } from "./safe-json";
 import type { StatsCache, DailyActivity } from "@/types/project";
 
 export function getStats(): StatsCache | null {
   try {
     const raw = fs.readFileSync(PATHS.statsCache, "utf-8");
-    return JSON.parse(raw);
+    return safeParse<StatsCache>(raw);
   } catch {
     return null;
   }

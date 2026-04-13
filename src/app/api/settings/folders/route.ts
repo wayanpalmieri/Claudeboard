@@ -13,15 +13,18 @@ export async function GET() {
   }
 
   const entries = fs.readdirSync(projectsFolder, { withFileTypes: true });
+  // Dirent.isDirectory() follows symlinks on some platforms; filter by
+  // isSymbolicLink() first so we never surface anything the user's filesystem
+  // might be linking out of the curated folder.
   const folders = entries
-    .filter(e => e.isDirectory() && !e.name.startsWith("."))
+    .filter(e => !e.isSymbolicLink() && e.isDirectory() && !e.name.startsWith("."))
     .map(e => {
       const dirPath = path.join(projectsFolder, e.name);
       const subs = fs.readdirSync(dirPath, { withFileTypes: true });
       const hasProjectMarkers = subs.some(
-        s => s.name === "package.json" || s.name === "app.py" || s.name === "index.html" || s.name === "requirements.txt"
+        s => !s.isSymbolicLink() && (s.name === "package.json" || s.name === "app.py" || s.name === "index.html" || s.name === "requirements.txt")
       );
-      const subdirs = subs.filter(s => s.isDirectory() && !s.name.startsWith(".")).length;
+      const subdirs = subs.filter(s => !s.isSymbolicLink() && s.isDirectory() && !s.name.startsWith(".")).length;
       return {
         name: e.name,
         isGroup: !hasProjectMarkers && subdirs >= 1,
